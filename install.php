@@ -54,89 +54,11 @@
 	writeln("################");
 	br();
 
-	// Update 'fos_user.yaml' file
-	writeln("Copying fos_user.yaml config file ...");
+	// Copy 'fos_user.yaml' file
+	copyFileToSfApp($bundleVersion, '/config/packages/fos_user.yaml', 'config/packages/fos_user.yaml', true);
 
-	$fosUserFilePath 	= $bundleVersion . "/config/packages/fos_user.yaml";
-	$fosUserFileContent = file_get_contents($fosUserFilePath);
-	$fosUserFileContent = str_replace("%emailAddress%", $senderEmailAddr, $fosUserFileContent);
-
-	$result = file_put_contents("config/packages/fos_user.yaml", $fosUserFileContent);
-
-	if($result)
-	{
-		writeln("fos_user.yaml config file has been copied correctly.");
-	}
-	else
-	{
-		writeln("Error copying fos_user.yaml config file.");
-	}
-
-	// Update 'config/packages/framework.yaml' file
-	writeln("Checking framework.yaml config file ...");
-	$sfFrameworkFilePath = "config/packages/framework.yaml";
-
-	$file = fopen($sfFrameworkFilePath, "r");
-
-	if($file)
-	{
-		// read symfony project 'config/packages/framework.yaml' file
-		$fileHasBeenModified = false;
-		$newFileContent = "";
-		$frameworkLines = [];
-		$addLines = [
-			'cache:' => '',
-			'templating:' => "\tengines: ['twig', 'php']"
-		];
-
-		while(!feof($file))
-	  	{
-	  		$line = fgets($file);
-
-	  		$frameworkLines[] = $line;
-	  		$newFileContent .= $line;
-	  	}
-
-		fclose($file);
-
-		// add requried lines
-		foreach($addLines as $configKey => $configValue)
-		{
-			if( ! in_array($configKey, $frameworkLines))
-			{
-				$fileHasBeenModified = true;
-
-				$newFileContent .= "\n";
-				$newFileContent .= "\n" . $ymlSpace . $configKey;
-
-				if( empty($configValue)) continue;
-
-				$newFileContent .= "\n" . $ymlSpace . $configValue;
-			}
-		}
-
-		// save modified file
-		$saveResult = false;
-
-		if($fileHasBeenModified == true)
-		{
-			writeln("Updating framework.yaml config file ...");
-			$saveResult = file_put_contents($sfFrameworkFilePath, $newFileContent);
-		}	
-
-		if($saveResult)
-		{
-			writeln("framework.yaml config file has been saved correctly.");
-		}
-		else
-		{
-			writeln("Error saving framework.yaml config.");
-		}
-	}
-	else
-	{
-		writeln("Unable to open '" . $sfFrameworkFilePath . "' file! " . $e->getMessage());
-	}
+	// Copy 'framework.yaml' file
+	copyFileToSfApp($bundleVersion, '/config/packages/framework.yaml', 'config/packages/framework.yaml', true);
 
 	// Copy 'package.json' file
 	copyFileToSfApp($bundleVersion, 'package.json', 'package.json', true);
