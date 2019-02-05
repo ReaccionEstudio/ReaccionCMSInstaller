@@ -1,8 +1,9 @@
 <?php
 
-	echo "\n###################################\n";
-	echo "## Reaccion CMS Bundle Installer ##\n";
-	echo "###################################\n\n";
+	writeln("###################################");
+	writeln("## Reaccion CMS Bundle Installer ##");
+	writeln("###################################");
+	br(2);
 
 	$ymlSpace = "    ";
 	$excludeFolders = ['.', '..', '.git'];
@@ -24,15 +25,15 @@
 		if( ! $bundleVersionIsAvailable)
 		{
 			// list available versions
-			echo "\n Bundle version '" . $bundleVersion .  "' is not available.";
-			echo "\n Available versions are:\n";
+			writeln("Bundle version '" . $bundleVersion .  "' is not available.");
+			writeln("Available versions are:\n");
 
 			foreach($availableVersions as $version)
 			{
-				echo "\n\t- " . $version;
+				writeln("\t- " . $version);
 			}
 
-			echo "\n\n";
+			br(2);
 		}
 	} 
 	while( ! $bundleVersionIsAvailable );
@@ -41,8 +42,13 @@
 	$senderEmailAddr = readline("Enter app sender email address: ");
 	$senderEmailAddr = ( ! empty($senderEmailAddr)) ? $senderEmailAddr : "email@host.com";
 
+	writeln("################");
+	writeln("## Installing ##");
+	writeln("################");
+	br();
+
 	// Update 'fos_user.yaml' file
-	echo "\nCopying fos_user.yaml config file ...";
+	writeln("Copying fos_user.yaml config file ...");
 
 	$fosUserFilePath 	= $bundleVersion . "/config/packages/fos_user.yaml";
 	$fosUserFileContent = file_get_contents($fosUserFilePath);
@@ -52,15 +58,15 @@
 
 	if($result)
 	{
-		echo "\nfos_user.yaml config file has been copied correctly.";
+		writeln("fos_user.yaml config file has been copied correctly.");
 	}
 	else
 	{
-		echo "\nError copying fos_user.yaml config file.";
+		writeln("Error copying fos_user.yaml config file.");
 	}
 
 	// Update 'config/packages/framework.yaml' file
-	echo "\nChecking framework.yaml config file ...";
+	writeln("Checking framework.yaml config file ...");
 	$sfFrameworkFilePath = "config/packages/framework.yaml";
 
 	$file = fopen($sfFrameworkFilePath, "r");
@@ -107,23 +113,39 @@
 
 		if($fileHasBeenModified == true)
 		{
-			echo "\nUpdating framework.yaml config file ...";
+			writeln("Updating framework.yaml config file ...");
 			$saveResult = file_put_contents($sfFrameworkFilePath, $newFileContent);
 		}	
 
 		if($saveResult)
 		{
-			echo "\nframework.yaml config file has been saved correctly.";
+			writeln("framework.yaml config file has been saved correctly.");
 		}
 		else
 		{
-			echo "\nError saving framework.yaml config.";
+			writeln("Error saving framework.yaml config.");
 		}
 	}
 	else
 	{
-		echo "\nUnable to open '" . $sfFrameworkFilePath . "' file! " . $e->getMessage();
+		writeln("Unable to open '" . $sfFrameworkFilePath . "' file! " . $e->getMessage());
 	}
 
-	echo "\n";
+	br(2);
+	// End installation script
 
+	/**
+	 * Functions
+	 */
+	function writeln(String $message)
+	{
+		echo "\n" . $message;
+	}
+
+	function br(Int $total=1)
+	{
+		for($i=0;$i<$total;$i++)
+		{
+			echo "\n";
+		}
+	}
