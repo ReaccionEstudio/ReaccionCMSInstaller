@@ -42,6 +42,13 @@
 	$senderEmailAddr = readline("Enter app sender email address: ");
 	$senderEmailAddr = ( ! empty($senderEmailAddr)) ? $senderEmailAddr : "email@host.com";
 
+	// Install Reaccion CMS Admin panel?
+	do
+	{
+		$installAdminPanel = readline("Do you want to install the Reaccion CMS Admin Panel? [Y/N]");
+	}
+	while( ! in_array(strtolower($installAdminPanel), ['y','n']) );
+
 	writeln("################");
 	writeln("## Installing ##");
 	writeln("################");
@@ -131,7 +138,53 @@
 		writeln("Unable to open '" . $sfFrameworkFilePath . "' file! " . $e->getMessage());
 	}
 
+	// Copy 'package.json' file
+	writeln("Copying package.json file ...");
+
+	if(file_exists('package.json'))
+	{
+		unlink('package.json');
+	}
+
+	$copyResult = copy($bundleVersion . "/package.json", 'package.json');
+
+	if($copyResult)
+	{
+		writeln("File 'package.json' has been copied correctly ...");
+	}
+	else
+	{
+		writeln("Error copying package.json file");
+	}
+
+	// Copy 'webpack.config.js'
+	if(file_exists('webpack.config.js'))
+	{
+		unlink('webpack.config.js');
+	}
+
+	if($installAdminPanel)
+	{
+		$webpackCopyResult = copy($bundleVersion . "/webpack.config.js_with_panel", "webpack.config.js");
+	}
+	else
+	{
+		$webpackCopyResult = copy($bundleVersion . "/webpack.config.js", "webpack.config.js");
+	}
+
+	if($webpackCopyResult)
+	{
+		writeln("File 'webpack.config.js' has been copied correctly.");
+	}
+	else
+	{
+		writeln("Error copying 'webpack.config.js' file.");
+	}
+
+	
+
 	br(2);
+
 	// End installation script
 
 	/**
