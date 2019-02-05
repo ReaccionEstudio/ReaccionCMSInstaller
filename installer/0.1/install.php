@@ -23,6 +23,9 @@
 	writeln("################");
 	br();
 
+	// Copy 'services.yaml' file
+	copyFileToSfApp(__DIR__ . '/config/services.yaml', SYMFONY_PATH . 'config/services.yaml', true);
+
 	// Copy 'fos_user.yaml' file
 	copyFileToSfApp(__DIR__ . '/config/packages/fos_user.yaml', SYMFONY_PATH . 'config/packages/fos_user.yaml', true);
 
@@ -31,6 +34,12 @@
 
 	// Copy 'package.json' file
 	copyFileToSfApp(__DIR__ . '/package.json', SYMFONY_PATH . 'package.json', true);
+
+	// check assets file exists
+	if( ! file_exists(SYMFONY_PATH . "/assets"))
+	{
+		mkdir(SYMFONY_PATH . "/assets/js", 0755, true);
+	}
 
 	// Copy 'webpack.config.js'
 	if($installAdminPanel)
@@ -76,7 +85,7 @@
 		if(file_exists($newPath) && $delete)
 		{
 			// TODO: copiar los archivos originales en el directorio de la version
-			//unlink($sourcePath);
+			unlink($newPath);
 		}
 
 		$copyResult = copy($sourcePath, $newPath);
