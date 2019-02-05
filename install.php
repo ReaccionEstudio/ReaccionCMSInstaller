@@ -66,12 +66,16 @@
 	// Copy 'webpack.config.js'
 	if($installAdminPanel)
 	{
+		copyFileToSfApp($bundleVersion, "/assets/js/app.js", "assets/js/app.js", true);
 		copyFileToSfApp($bundleVersion, "/webpack.config.js_with_panel", "webpack.config.js", true);
 	}
 	else
 	{
 		copyFileToSfApp($bundleVersion, "/webpack.config.js", "webpack.config.js", true);
 	}
+
+	// assets
+	copyFileToSfApp($bundleVersion, "/assets/js/front_app.js", "assets/js/front_app.js", true);
 
 	// security.yml
 	copyFileToSfApp($bundleVersion, "/config/packages/security.yaml", "config/packages/security.yaml", true);
