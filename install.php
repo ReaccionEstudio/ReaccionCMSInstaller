@@ -139,49 +139,20 @@
 	}
 
 	// Copy 'package.json' file
-	writeln("Copying package.json file ...");
-
-	if(file_exists('package.json'))
-	{
-		unlink('package.json');
-	}
-
-	$copyResult = copy($bundleVersion . "/package.json", 'package.json');
-
-	if($copyResult)
-	{
-		writeln("File 'package.json' has been copied correctly ...");
-	}
-	else
-	{
-		writeln("Error copying package.json file");
-	}
+	copyFileToSfApp($bundleVersion, 'package.json', 'package.json', true);
 
 	// Copy 'webpack.config.js'
-	if(file_exists('webpack.config.js'))
-	{
-		unlink('webpack.config.js');
-	}
-
 	if($installAdminPanel)
 	{
-		$webpackCopyResult = copy($bundleVersion . "/webpack.config.js_with_panel", "webpack.config.js");
+		copyFileToSfApp($bundleVersion, "/webpack.config.js_with_panel", "webpack.config.js", true);
 	}
 	else
 	{
-		$webpackCopyResult = copy($bundleVersion . "/webpack.config.js", "webpack.config.js");
+		copyFileToSfApp($bundleVersion, "/webpack.config.js", "webpack.config.js", true);
 	}
 
-	if($webpackCopyResult)
-	{
-		writeln("File 'webpack.config.js' has been copied correctly.");
-	}
-	else
-	{
-		writeln("Error copying 'webpack.config.js' file.");
-	}
-
-	
+	// security.yml
+	copyFileToSfApp($bundleVersion, "/config/packages/security.yaml", "config/packages/security.yaml", true);
 
 	br(2);
 
@@ -200,5 +171,26 @@
 		for($i=0;$i<$total;$i++)
 		{
 			echo "\n";
+		}
+	}
+
+	function copyFileToSfApp($bundleVersion, $sourcePath, $newPath, $delete=false)
+	{
+		writeln("Copying '" . $sourcePath . "' file ...");
+
+		if(file_exists($sourcePath) && $delete)
+		{
+			unlink($sourcePath);
+		}
+
+		$copyResult = copy($bundleVersion . "/" . $sourcePath, $newPath);
+
+		if($copyResult)
+		{
+			writeln("File '" . $sourcePath . "' has been copied correctly.");
+		}
+		else
+		{
+			writeln("Error copying '" . $sourcePath . "' file.");
 		}
 	}
